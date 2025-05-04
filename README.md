@@ -4,76 +4,141 @@ A web application to display and interact with JIRA tickets.
 
 ## Overview
 
-This project consists of two main parts:
+This project is organized as a [Turborepo](https://turborepo.org) monorepo with the following structure:
 
-*   **Backend (`backend/`)**: A Node.js/Express application that connects to the JIRA REST API using a Personal Access Token (PAT) to fetch and manipulate ticket data.
-*   **Frontend (`frontend/`)**: A React application built with Create React App and CoreUI v5 for the user interface. It communicates with the backend API.
+- **Backend (`apps/backend/`)**: A Node.js/Express application that connects to the JIRA REST API using a Personal Access Token (PAT) to fetch and manipulate ticket data.
+- **Frontend (`apps/frontend/`)**: A React application built with Create React App and CoreUI v5 for the user interface. It communicates with the backend API.
 
 ## Prerequisites
 
-*   Node.js (v16 or later recommended)
-*   npm (usually comes with Node.js)
-*   A JIRA Cloud instance
-*   A JIRA Personal Access Token (PAT) - See [Atlassian Documentation](https://support.atlassian.com/atlassian-account/docs/manage-api-tokens-for-your-atlassian-account/) on how to create one. You'll need permissions to read/write JIRA issues.
+- Node.js (v16 or later recommended)
+- npm (usually comes with Node.js)
+- A JIRA Cloud instance
+- A JIRA Personal Access Token (PAT) - See [Atlassian Documentation](https://support.atlassian.com/atlassian-account/docs/manage-api-tokens-for-your-atlassian-account/) on how to create one. You'll need permissions to read/write JIRA issues.
 
-## Backend Setup (`backend/`)
+## Setup
 
-1.  **Navigate to the backend directory:**
-    ```bash
-    cd backend
-    ```
+### Root Setup
 
-2.  **Install dependencies:**
-    ```bash
-    npm install
-    ```
+1. **Clone the repository:**
 
-3.  **Create a `.env` file:**
-    Create a file named `.env` in the `backend/` directory and add the following variables, replacing the placeholder values with your actual JIRA information:
+```bash
+git clone git@github.com:thananon/vibejira.git
+cd vibejira
+```
 
-    ```dotenv
-    # Backend server port
-    PORT=3001
+2. **Install dependencies:**
 
-    # Your JIRA Cloud instance base URL
-    JIRA_BASE_URL=https://your-domain.atlassian.net
+```bash
+npm install
+```
 
-    # Your JIRA Personal Access Token (PAT)
-    JIRA_PAT=your_jira_personal_access_token_here
+### Backend Setup (`apps/backend/`)
 
-    # Frontend URL (for CORS)
-    FRONTEND_ORIGIN=http://localhost:3000
-    ```
+1. **Create a `.env` file:**
 
-4.  **Run the backend (development mode):**
-    ```bash
-    npm run dev
-    ```
-    The backend server will start, typically on `http://localhost:3001`. It uses `nodemon` to automatically restart on file changes.
+   Create a file named `.env` in the `apps/backend/` directory and add the following variables, replacing the placeholder values with your actual JIRA information:
 
-## Frontend Setup (`frontend/`)
+   ```dotenv
+   # Backend server port
+   PORT=3001
 
-1.  **Navigate to the frontend directory:**
-    ```bash
-    cd ../frontend 
-    # Or from the root: cd frontend
-    ```
+   # Your JIRA Cloud instance base URL
+   JIRA_BASE_URL=https://your-domain.atlassian.net
 
-2.  **Install dependencies:**
-    ```bash
-    npm install
-    ```
+   # Your JIRA Personal Access Token (PAT)
+   JIRA_PAT=your_jira_personal_access_token_here
 
-3.  **Run the frontend:**
-    ```bash
-    npm start
-    ```
-    The React development server will start, and the application should open automatically in your browser, typically at `http://localhost:3000`.
+   # Frontend URL (for CORS)
+   FRONTEND_ORIGIN=http://localhost:3000
+
+   # Optional for debugging
+   JIRA_API_DEBUG=false
+   ```
+
+### Frontend Setup (`apps/frontend/`)
+
+No additional configuration is needed for the frontend as it's set up to connect to the backend automatically.
 
 ## Running the Application
 
-1.  Start the backend server first (follow Backend Setup steps).
-2.  Start the frontend development server (follow Frontend Setup steps).
-3.  Open your browser to `http://localhost:3000` (or the port specified by the frontend).
+### Development Mode
 
-**Note:** The frontend currently uses mock data. Integration with the backend API endpoints is the next step. 
+From the root directory, you can run both frontend and backend simultaneously using:
+
+```bash
+npm run dev
+```
+
+This will start:
+
+- Backend server at `http://localhost:3001`
+- Frontend development server at `http://localhost:3000`
+
+### Running Individual Services
+
+If you need to run the services separately:
+
+1. **Backend only:**
+
+```bash
+turbo run dev --filter=backend
+```
+
+2. **Frontend only:**
+
+```bash
+turbo run dev --filter=frontend
+```
+
+3. **Backend with debugging enabled:**
+
+```bash
+turbo run debug --filter=backend
+```
+
+## Building for Production
+
+To build all applications:
+
+```bash
+npm run build
+```
+
+This will create production builds for both the frontend and backend.
+
+## Project Structure
+
+```
+.
+├── apps/
+│   ├── frontend/         # React frontend application
+│   │   ├── public/
+│   │   ├── src/
+│   │   └── package.json
+│   └── backend/          # Express backend server
+│       ├── src/
+│       └── package.json
+├── turbo.json            # Turborepo configuration
+└── package.json          # Root package.json
+```
+
+## Turborepo Features
+
+This project uses Turborepo for:
+
+- Optimized build caching
+- Parallel task execution
+- Dependency graph management
+- Standardized scripts across packages
+
+## Adding New Workspace Packages
+
+To add a new package to the monorepo:
+
+1. Create a new directory in `apps/` or `packages/`
+2. Initialize it with `npm init`
+3. Add the appropriate scripts (dev, build, test, etc.)
+4. The package will automatically be included in the workspace
+
+**Note:** The frontend currently uses mock data. Integration with the backend API endpoints is the next step.
