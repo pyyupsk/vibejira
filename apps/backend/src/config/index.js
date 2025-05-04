@@ -1,4 +1,4 @@
-require('dotenv').config();
+require('dotenv').config()
 
 module.exports = {
   port: process.env.PORT || 3001,
@@ -6,4 +6,4 @@ module.exports = {
   jiraPat: process.env.JIRA_PAT,
   frontendOrigin: process.env.FRONTEND_ORIGIN,
   frontendUrl: process.env.FRONTEND_URL,
-}; 
+}

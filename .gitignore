@@ -1,8 +1,8 @@
 # Dependencies
-/node_modules
+node_modules
 
 # Build output
-/build
+build
 
 # Logs
 logs
@@ -102,3 +102,6 @@ dist
 
 # Windows
 Thumbs.db 
+
+# .turbo
+.turbo
